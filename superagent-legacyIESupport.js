@@ -1,5 +1,6 @@
 ﻿var superagentLegacyIESupportPlugin = function (superagent) {
 
+    // a litle cheat to parse the url, to find the hostname.
     function parseUrl(url) {
         var anchor = document.createElement('a');
         anchor.href = url;
@@ -12,6 +13,7 @@
         };
     };
 
+    // needed to copy this from Superagent library unfortunately
     function serializeObject(obj) {
         if (obj !== Object(obj)) return obj;
         var pairs = [];
@@ -24,13 +26,16 @@
         return pairs.join('&');
     }
 
+    // the overridden end function to use for IE 8 & 9
     var xDomainRequestEnd = function (fn) {
         var self = this;
-        var xhr = this.xhr = new XDomainRequest(); // the overriden line.
-        xhr.getAllResponseHeaders = function () { return ''; };
+        var xhr = this.xhr = new XDomainRequest(); // IE 8 & 9 bespoke implementation
+        
+        // XDomainRequest doesn't support these, so we stub them out
+        xhr.getAllResponseHeaders = function () { return ''; }; 
         xhr.getResponseHeader = function (name) {
             if (name == 'content-type') {
-                return 'application/json';
+                return 'application/json'; // careful! you might not be able to make this cheating assumption.
             }
         };
 
@@ -80,7 +85,7 @@
 
         // CORS - withCredentials not supported by XDomainRequest
 
-        // body
+        // body - remember only POST and GETs are supported
         if ('POST' == this.method && 'string' != typeof data) {
             data = serializeObject(data);
         }
