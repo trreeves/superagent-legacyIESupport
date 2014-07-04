@@ -11,6 +11,8 @@ In a nutshell, CORS is implemented with its own `XDomainRequest` object, seperat
 
 Superagent out of the box does support making requests in IE 8 & 9 to origins on the same domain (which doesn't include sub domains by the way), and does support cross domain requests with CORS-supporting services on the other major browsers, including IE 10 & 11.
 
+However, you'll need to do something similar to what this plugin does if you want to make cross domain requests on IE 8 & 9.
+
 Also bear in mind, if you want to do any cross domain requests from any version of IE, your service will also need to supply a valid P3P header for IE to honour the response.
 
 Have fun.
