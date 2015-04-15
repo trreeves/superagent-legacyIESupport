@@ -1,9 +1,8 @@
-superagent-legacyIESupport
-==========================
+# superagent-legacyIESupport
 
-A plugin for the Superagent Javascript library to support cross domain requests on IE 8 &amp; 9
+A plugin for the Superagent Javascript library to support cross domain requests on IE 8 &amp; 9.  Now on npm : https://www.npmjs.com/package/superagent-legacyiesupport.
 
-##Description
+## Description
 
 Surprise surprise, CORS requests don't work quite the same way in IE 8 & 9 as they do in other browsers, and they come with some extra restrictions.  This is a nice page describing some of the finer details: http://blogs.msdn.com/b/ieinternals/archive/2010/05/13/xdomainrequest-restrictions-limitations-and-workarounds.aspx.
 
@@ -17,7 +16,7 @@ Also bear in mind, if you want to do any cross domain requests from any version 
 
 Have fun.
 
-##Usage
+## Usage
 ```
 var request = require('superagent'),
     legacyIESupport = require('./superagent-legacyIESupport');
