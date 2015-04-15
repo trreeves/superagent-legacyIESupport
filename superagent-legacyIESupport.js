@@ -43,7 +43,7 @@
         var data = this._formData || this._data;
 
         // store callback
-        this._callback = fn || noop;
+        this._callback = fn || function() {};
 
         // state change
         xhr.onload = function () {
