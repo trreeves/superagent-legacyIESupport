@@ -105,7 +105,8 @@
     // if request to other domain, and we're on a relevant browser
     var parsedUrl = parseUrl(superagent.url);
     if (parsedUrl.hostname != window.location.hostname &&
-        typeof XDomainRequest !== "undefined") { // IE 8 & 9
+        typeof XDomainRequest !== "undefined" && // IE 8, 9, & 10
+        !('withCredentials' in new XMLHttpRequest())) { // exclude IE 10
         // (note another XDomainRequest restriction - calls must always be to the same protocol as the current page.)
         superagent.end = xDomainRequestEnd;
     }
