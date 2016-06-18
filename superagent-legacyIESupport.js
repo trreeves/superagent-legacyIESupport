@@ -102,12 +102,14 @@
      * Overrides .end() to use XDomainRequest object when necessary (making a cross domain request on IE 8 & 9.
      */
 
-    // if request to other domain, and we're on a relevant browser
-    var parsedUrl = parseUrl(superagent.url);
-    if (parsedUrl.hostname != window.location.hostname &&
-        typeof XDomainRequest !== "undefined") { // IE 8 & 9
-        // (note another XDomainRequest restriction - calls must always be to the same protocol as the current page.)
-        superagent.end = xDomainRequestEnd;
+    // if we're on a relevant browser
+    if (typeof XDomainRequest !== "undefined") { // IE 8 & 9
+      // if request to other domain
+      var parsedUrl = parseUrl(superagent.url);
+      if (parsedUrl.hostname != window.location.hostname) { // IE 8 & 9
+          // (note another XDomainRequest restriction - calls must always be to the same protocol as the current page.)
+          superagent.end = xDomainRequestEnd;
+      }
     }
 
 };
