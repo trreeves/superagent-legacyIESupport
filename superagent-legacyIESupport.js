@@ -1,5 +1,8 @@
 ﻿var superagentLegacyIESupportPlugin = function (superagent) {
 
+    // Mimic superagent's internal code so we can copy from it verbatim.
+    var request = {};
+
     // a litle cheat to parse the url, to find the hostname.
     function parseUrl(url) {
         var anchor = document.createElement('a');
@@ -13,9 +16,13 @@
         };
     };
 
-    // needed to copy this from Superagent library unfortunately
-    function serializeObject(obj) {
-        if (obj !== Object(obj)) return obj;
+    // Begin: superagent's private serialization logic mirrored here
+    function isObject(obj) {
+      return obj === Object(obj);
+    }
+
+    function serialize(obj) {
+        if (!isObject(obj)) return obj;
         var pairs = [];
         for (var key in obj) {
             if (null != obj[key]) {
@@ -25,6 +32,14 @@
         }
         return pairs.join('&');
     }
+
+    request.serializeObject = serialize;
+
+    request.serialize = {
+      'application/x-www-form-urlencoded': serialize,
+      'application/json': JSON.stringify
+    };
+    // End: superagent's private serialization logic mirrored here
 
     // the overridden end function to use for IE 8 & 9
     var xDomainRequestEnd = function (fn) {
@@ -70,7 +85,7 @@
 
         // querystring
         if (query) {
-            query = serializeObject(query);
+            query = request.serializeObject(query);
             this.url += ~this.url.indexOf('?')
                 ? '&' + query
                 : '?' + query;
@@ -87,7 +102,10 @@
 
         // body - remember only POST and GETs are supported
         if ('POST' == this.method && 'string' != typeof data) {
-            data = serializeObject(data);
+            // serialize stuff
+            var contentType = this.getHeader('Content-Type');
+            var serialize = request.serialize[contentType ? contentType.split(';')[0] : ''];
+            if (serialize) data = serialize(data);
         }
 
         // custom headers are not support by XDomainRequest
